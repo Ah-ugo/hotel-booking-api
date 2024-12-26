@@ -5,8 +5,6 @@ from bson import ObjectId
 from routes.auth import admin_required, oauth2_scheme, get_user_from_token
 import logging
 from utils.cloudinary_upload import UploadToCloudinary
-import jwt
-import json
 
 logging.basicConfig(level=logging.DEBUG)
 
