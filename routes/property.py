@@ -128,38 +128,21 @@ async def delete_apartment(apartment_id: str, user: dict = Depends(admin_require
 
 
 # User Routes
+def get_accommodations(collection_name: str, location: Optional[str] = None):
+    collection = db[collection_name]
+    filter = {"location": location} if location else {}
+    accommodations = list(collection.find(filter))
+    for accommodation in accommodations:
+        accommodation["_id"] = str(accommodation["_id"])
+    return accommodations
+
 @router.get("/hotels")
 async def get_hotels(location: Optional[str] = None):
-    hotels_collection = db['hotels']
-
-    if location:
-        hotels_cursor = hotels_collection.find({"location": location})
-    else:
-        hotels_cursor = hotels_collection.find()
-
-    hotels = []
-    for hotel in hotels_cursor:
-        hotel["_id"] = str(hotel["_id"])
-        hotels.append(hotel)
-
-    return {"hotels": hotels}
-
+    return {"hotels": get_accommodations("hotels", location)}
 
 @router.get("/apartments")
 async def get_apartments(location: Optional[str] = None):
-    apartments_collection = db['apartments']
-    if location:
-        apartments_cursor = apartments_collection.find({"location": location})
-
-    else:
-        apartments_cursor = apartments_collection.find()
-
-    apartments = []
-
-    for apartment in apartments_cursor:
-        apartment["_id"] = str(apartment["_id"])
-        apartments.append(apartment)
-    return {"apartments": apartments}
+    return {"apartments": get_accommodations("apartments", location)}
 
 
 # @router.get("/hotels/{hotel_id}")
