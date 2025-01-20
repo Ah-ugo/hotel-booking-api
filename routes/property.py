@@ -128,21 +128,31 @@ async def delete_apartment(apartment_id: str, user: dict = Depends(admin_require
 
 
 # User Routes
-def get_accommodations(collection_name: str, location: Optional[str] = None):
-    collection = db[collection_name]
-    filter = {"location": location} if location else {}
-    accommodations = list(collection.find(filter))
-    for accommodation in accommodations:
-        accommodation["_id"] = str(accommodation["_id"])
-    return accommodations
+def get_accommodations(collection_name: str, location: Optional[str] = None) -> List[Dict[str, Any]]:
+    try:
+        collection: Collection = db[collection_name]
+        filter_query = {"location": location} if location else {}
+        accommodations = list(collection.find(filter_query))
+        
+        # Convert ObjectId to string for JSON serialization
+        for accommodation in accommodations:
+            accommodation["_id"] = str(accommodation["_id"])
+            
+        return accommodations
+    except Exception as e:
+        # Log the error (optional)
+        print(f"Error fetching accommodations from {collection_name}: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while fetching accommodations.")
 
 @router.get("/hotels")
 async def get_hotels(location: Optional[str] = None):
-    return {"hotels": get_accommodations("hotels", location)}
+    hotels = get_accommodations("hotels", location)
+    return {"hotels": hotels}
 
 @router.get("/apartments")
 async def get_apartments(location: Optional[str] = None):
-    return {"apartments": get_accommodations("apartments", location)}
+    apartments = get_accommodations("apartments", location)
+    return {"apartments": apartments}
 
 
 # @router.get("/hotels/{hotel_id}")
