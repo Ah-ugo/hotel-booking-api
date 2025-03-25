@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, Form, File
 from models.property import Hotel, db, Apartment, UpdateHotel, UpdateApartment
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from bson import ObjectId
 from routes.auth import admin_required, oauth2_scheme, get_user_from_token
 import logging
@@ -9,6 +9,16 @@ from utils.cloudinary_upload import UploadToCloudinary
 logging.basicConfig(level=logging.DEBUG)
 
 router = APIRouter()
+
+def convert_objectid_to_str(obj):
+    if isinstance(obj, ObjectId):
+        return str(obj)
+    elif isinstance(obj, dict):
+        return {k: convert_objectid_to_str(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_objectid_to_str(item) for item in obj]
+    else:
+        return obj
 
 
 # oauth2_scheme q   = OAuth2PasswordBearer(tokenUrl="auth/signin")
@@ -133,14 +143,12 @@ def get_accommodations(collection_name: str, location: Optional[str] = None) -> 
         collection: Collection = db[collection_name]
         filter_query = {"location": location} if location else {}
         accommodations = list(collection.find(filter_query))
-        
-        # Convert ObjectId to string for JSON serialization
-        for accommodation in accommodations:
-            accommodation["_id"] = str(accommodation["_id"])
-            
+
+        accommodations = convert_objectid_to_str(accommodations)
+
         return accommodations
+
     except Exception as e:
-        # Log the error (optional)
         print(f"Error fetching accommodations from {collection_name}: {e}")
         raise HTTPException(status_code=500, detail="An error occurred while fetching accommodations.")
 
