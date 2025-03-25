@@ -186,18 +186,15 @@ async def get_hotel_by_id(hotel_id: str):
     hotel = hotels_collection.find_one({"_id": ObjectId(hotel_id)})
     if not hotel:
         raise HTTPException(status_code=404, detail="Hotel not found")
-    hotel["_id"] = str(hotel["_id"])
-    return hotel
-
+    return convert_objectid_to_str(hotel)
 
 @router.get("/apartments/{apartment_id}")
 async def get_apartment_by_id(apartment_id: str):
     apartments_collection = db['apartments']
     apartment = apartments_collection.find_one({"_id": ObjectId(apartment_id)})
-    apartment["_id"] = str(apartment["_id"])
     if not apartment:
         raise HTTPException(status_code=404, detail="Apartment not found")
-    return apartment
+    return convert_objectid_to_str(apartment)
 
 
 @router.put("/hotels/{hotel_id}/nights")
