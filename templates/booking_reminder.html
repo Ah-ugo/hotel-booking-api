@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Reminder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .reminder-box {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+        }
+        .accommodation-image {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .button {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .map-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .weather-container {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Your Stay is Coming Up!</h1>
+    </div>
+
+    <p>Dear {{ user.first_name }},</p>
+
+    <p>We're excited to remind you that your stay at <strong>{{ accommodation.name }}</strong> is coming up soon!</p>
+
+    {% if accommodation.images and accommodation.images|length > 0 %}
+    <img src="{{ accommodation.images[0] }}" alt="{{ accommodation.name }}" class="accommodation-image">
+    {% endif %}
+
+    <div class="reminder-box">
+        <h2>Booking Details</h2>
+
+        <div class="detail-row">
+            <span class="detail-label">Check-in Date:</span>
+            <span>{{ booking.check_in_date.strftime('%d %b %Y') }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Check-out Date:</span>
+            <span>{{ booking.check_out_date.strftime('%d %b %Y') }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Room:</span>
+            <span>{{ accommodation.rooms[booking.room_id|int].name }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Number of Guests:</span>
+            <span>{{ booking.guests }}</span>
+        </div>
+    </div>
+
+    <h2>Location & Directions</h2>
+    <p>{{ accommodation.address }}, {{ accommodation.city }}, {{ accommodation.state }}, {{ accommodation.country }}</p>
+
+    <div class="map-container">
+        <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ accommodation.location.coordinates[1] }},{{ accommodation.location.coordinates[0] }}&zoom=15&size=600x300&markers=color:red%7C{{ accommodation.location.coordinates[1] }},{{ accommodation.location.coordinates[0] }}&key=YOUR_API_KEY" alt="Map" style="width: 100%; height: auto; border-radius: 5px;">
+    </div>
+
+    <h2>Important Information</h2>
+    <ul>
+        <li><strong>Check-in time:</strong> 2:00 PM</li>
+        <li><strong>Check-out time:</strong> 11:00 AM</li>
+        <li><strong>Contact:</strong> {{ accommodation.contact_phone }}</li>
+    </ul>
+
+    {% if accommodation.amenities %}
+    <h2>Amenities</h2>
+    <ul>
+        {% for amenity in accommodation.amenities %}
+        <li>{{ amenity.name }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <p>We hope you have a wonderful stay! If you have any questions or need to make changes to your booking, please contact us.</p>
+
+    <p>Best regards,<br>The Accommodation Booking Team</p>
+
+    <div class="footer">
+        <p>This is an automated email. Please do not reply to this message.</p>
+        <p>&copy; {{ booking.created_at.year }} Accommodation Booking. All rights reserved.</p>
+    </div>
+</body>
+</html>
+

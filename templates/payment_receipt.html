@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .receipt {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            border-top: 2px solid #ddd;
+            padding-top: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .success-message {
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .booking-details {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Payment Receipt</h1>
+    </div>
+
+    <div class="success-message">
+        <p>Payment Successful!</p>
+    </div>
+
+    <p>Dear {{ user.first_name }},</p>
+
+    <p>Thank you for your payment. Your booking at <strong>{{ accommodation.name }}</strong> has been confirmed.</p>
+
+    <div class="receipt">
+        <h2>Payment Details</h2>
+
+        <div class="detail-row">
+            <span class="detail-label">Payment Reference:</span>
+            <span>{{ payment.reference }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Payment Date:</span>
+            <span>{{ payment.created_at.strftime('%d %b %Y, %H:%M') }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Payment Method:</span>
+            <span>{{ payment.payment_method }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Payment Status:</span>
+            <span>{{ payment.status }}</span>
+        </div>
+
+        <div class="total-row">
+            <span>Total Amount Paid:</span>
+            <span>${{ "%.2f"|format(payment.amount) }}</span>
+        </div>
+    </div>
+
+    <div class="booking-details">
+        <h2>Booking Details</h2>
+
+        <div class="detail-row">
+            <span class="detail-label">Booking ID:</span>
+            <span>{{ booking.id }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Accommodation:</span>
+            <span>{{ accommodation.name }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Room:</span>
+            <span>{{ accommodation.rooms[booking.room_id|int].name }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Check-in Date:</span>
+            <span>{{ booking.check_in_date.strftime('%d %b %Y') }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Check-out Date:</span>
+            <span>{{ booking.check_out_date.strftime('%d %b %Y') }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span class="detail-label">Number of Guests:</span>
+            <span>{{ booking.guests }}</span>
+        </div>
+    </div>
+
+    <p>Your booking is now confirmed. We look forward to welcoming you to {{ accommodation.name }}!</p>
+
+    <p>If you have any questions or need assistance, please don't hesitate to contact us.</p>
+
+    <p>Best regards,<br>The Accommodation Booking Team</p>
+
+    <div class="footer">
+        <p>This is an automated email. Please do not reply to this message.</p>
+        <p>&copy; {{ payment.created_at.year }} Accommodation Booking. All rights reserved.</p>
+    </div>
+</body>
+</html>
+
