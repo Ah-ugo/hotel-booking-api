@@ -99,7 +99,7 @@ class AccommodationUpdate(BaseModel):
 
 class AccommodationResponse(AccommodationBase):
     id: str = Field(..., alias="_id")
-    created_at: datetime
+    created_at: Optional[datetime] = None
     average_rating: float = 0.0
     reviews_count: int = 0
 

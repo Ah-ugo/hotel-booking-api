@@ -5,29 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a06884e7-32f2-4a55-aff9-231cc3b90fda" name="Changes" comment="First Commit">
-      <change afterPath="$PROJECT_DIR$/config/db.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/accommodations.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/newBooking.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/newPayment.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/newUser.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/review.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/accommodation_routes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/admin_routes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/auth_routes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/booking_routes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/payment_routes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/user_routes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/booking_confirmation.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/booking_reminder.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/payment_receipt.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/auth.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/cloudinary_util.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/email_util.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/location.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/paystack.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,12 +29,12 @@
     &quot;assignee&quot;: &quot;Ah-ugo&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Ah-ugo/hotel-booking-api.git",
-    "accountId": "77a49bd3-eac6-4607-b703-e5a16acd681e"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Ah-ugo/hotel-booking-api.git&quot;,
+    &quot;accountId&quot;: &quot;77a49bd3-eac6-4607-b703-e5a16acd681e&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -67,15 +45,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/Users/user/Pythonprojects/hotel-booking-api"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/user/Pythonprojects/hotel-booking-api&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>

@@ -125,24 +125,27 @@ def get_user_bookings(
         status: Optional[str] = Query(None),
         current_user: UserInDB = Depends(get_current_active_user)
 ):
-    # Build query
     query = {"user_id": current_user.id}
 
     if status:
         query["booking_status"] = status
 
-    # Get bookings
     bookings = list(db.bookings.find(query).sort("created_at", -1))
 
-    return [BookingResponse(**booking) for booking in bookings]
+    # Convert ObjectId to string before creating BookingResponse objects
+    response_bookings = []
+    for booking in bookings:
+        booking["_id"] = str(booking["_id"])  # Convert ObjectId to string
+        response_bookings.append(BookingResponse(**booking))
+
+    return response_bookings
 
 
 @router.get("/bookings/{booking_id}", response_model=BookingWithDetails)
 def get_booking_details(
-        booking_id: str,
-        current_user: UserInDB = Depends(get_current_active_user)
+    booking_id: str,
+    current_user: UserInDB = Depends(get_current_active_user)
 ):
-    # Check if booking exists
     if not ObjectId.is_valid(booking_id):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -160,19 +163,28 @@ def get_booking_details(
             detail="Booking not found"
         )
 
-    # Get accommodation details
-    accommodation = db.accommodations.find_one({"_id": booking["accommodation_id"]})
-
+    accommodation = db.accommodations.find_one({"_id": ObjectId(booking["accommodation_id"])})
     if not accommodation:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Accommodation not found"
         )
 
-    # Get user details
-    user = db.users.find_one({"_id": booking["user_id"]})
+    # Corrected line: Convert booking["user_id"] to ObjectId
+    user = db.users.find_one({"_id": ObjectId(booking["user_id"])})
 
-    # Create response
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User associated with the booking not found"
+        )
+
+    user["_id"] = str(user["_id"])
+
+    # Convert ObjectIds to Strings
+    booking["_id"] = str(booking["_id"])
+    accommodation["_id"] = str(accommodation["_id"])
+
     booking_with_details = BookingWithDetails(
         **booking,
         accommodation_details=accommodation,
@@ -180,7 +192,6 @@ def get_booking_details(
     )
 
     return booking_with_details
-
 
 @router.get("/favorites", response_model=List[AccommodationResponse])
 def get_user_favorites(
