@@ -142,7 +142,7 @@ def get_hotels(
         limit: int = Query(10, ge=1, le=100),
         sort_by: str = Query("rating", regex="^(rating|price|created_at)$"),
         sort_order: str = Query("desc", regex="^(asc|desc)$"),
-        current_user: Optional[UserInDB] = Depends(get_current_user)
+        # current_user: Optional[UserInDB] = Depends(get_current_user)
 ):
     """
     Get a paginated list of hotels with various filtering options.
@@ -160,7 +160,7 @@ def get_hotels(
         limit=limit,
         sort_by=sort_by,
         sort_order=sort_order,
-        current_user=current_user
+        # current_user=current_user
     )
 
 
@@ -177,7 +177,7 @@ def get_apartments(
         limit: int = Query(10, ge=1, le=100),
         sort_by: str = Query("rating", regex="^(rating|price|created_at)$"),
         sort_order: str = Query("desc", regex="^(asc|desc)$"),
-        current_user: Optional[UserInDB] = Depends(get_current_user)
+        # current_user: Optional[UserInDB] = Depends(get_current_user)
 ):
     """
     Get a paginated list of apartments with various filtering options.
@@ -195,7 +195,7 @@ def get_apartments(
         limit=limit,
         sort_by=sort_by,
         sort_order=sort_order,
-        current_user=current_user
+        # current_user=current_user
     )
 
 
@@ -212,7 +212,7 @@ def get_hostels(
         limit: int = Query(10, ge=1, le=100),
         sort_by: str = Query("rating", regex="^(rating|price|created_at)$"),
         sort_order: str = Query("desc", regex="^(asc|desc)$"),
-        current_user: Optional[UserInDB] = Depends(get_current_user)
+        # current_user: Optional[UserInDB] = Depends(get_current_user)
 ):
     """
     Get a paginated list of hostels with various filtering options.
@@ -230,7 +230,7 @@ def get_hostels(
         limit=limit,
         sort_by=sort_by,
         sort_order=sort_order,
-        current_user=current_user
+        # current_user=current_user
     )
 
 
@@ -247,7 +247,7 @@ def get_lodges(
         limit: int = Query(10, ge=1, le=100),
         sort_by: str = Query("rating", regex="^(rating|price|created_at)$"),
         sort_order: str = Query("desc", regex="^(asc|desc)$"),
-        current_user: Optional[UserInDB] = Depends(get_current_user)
+        # current_user: Optional[UserInDB] = Depends(get_current_user)
 ):
     """
     Get a paginated list of lodges with various filtering options.
@@ -265,7 +265,7 @@ def get_lodges(
         limit=limit,
         sort_by=sort_by,
         sort_order=sort_order,
-        current_user=current_user
+        # current_user=current_user
     )
 
 
