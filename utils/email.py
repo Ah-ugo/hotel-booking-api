@@ -20,8 +20,9 @@ def send_email(to_email: str, subject: str, body: str):
     msg.attach(MIMEText(body, 'plain'))
 
     try:
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        # server.starttls()
+        server.ehlo()
         server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         text = msg.as_string()
         server.sendmail(EMAIL_ADDRESS, to_email, text)

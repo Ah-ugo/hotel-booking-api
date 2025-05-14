@@ -7,14 +7,21 @@ from bson import ObjectId
 
 from config.db import db
 from config.settings import settings
-from models.newUser import UserCreate, UserInDB, UserResponse, Token
+from models.newUser import UserCreate, UserInDB, UserResponse, Token, ResetPasswordRequest, ResetPasswordConfirm
 from utils.auth import (
     authenticate_user, create_access_token, get_password_hash,
-    get_current_active_user
+    get_current_active_user, create_reset_token
 )
 from utils.cloudinary_util import upload_image
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+# from utils.auth import create_reset_token
+from utils.email_util import send_reset_email
+templates = Jinja2Templates(directory="templates")
 
 router = APIRouter()
+
+RESET_TOKEN_EXPIRE_MINUTES = 30
 
 
 @router.post("/register", response_model=UserResponse)
@@ -109,3 +116,136 @@ def read_users_me(current_user: UserInDB = Depends(get_current_active_user)):
     user_dict["_id"] = current_user.id #add the id back into the dictionary
     return UserResponse(**user_dict)
 
+
+@router.post("/request-password-reset", status_code=status.HTTP_202_ACCEPTED)
+async def request_password_reset(request: ResetPasswordRequest):
+    user = db.users.find_one({"email": request.email})
+    if not user:
+        # Security: Don't reveal whether user exists
+        return {"message": "If this email exists, a reset link has been sent"}
+
+    reset_token = create_reset_token()
+    reset_token_expires = datetime.utcnow() + timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES)
+
+    # Update user in database
+    db.users.update_one(
+        {"_id": user["_id"]},
+        {"$set": {
+            "reset_token": reset_token,
+            "reset_token_expires": reset_token_expires
+        }}
+    )
+
+    # Send email
+    try:
+        success = await send_reset_email(request.email, reset_token)
+        if not success:
+            print("Failed to send password reset email")
+    except Exception as e:
+        print(f"Error sending email: {str(e)}")
+
+    return {"message": "If this email exists, a reset link has been sent"}
+# @router.post("/reset-password")
+# async def reset_password(form_data: ResetPasswordConfirm):
+#     # Find user with this token
+#     user = db.users.find_one({
+#         "reset_token": form_data.token,
+#         "reset_token_expires": {"$gt": datetime.utcnow()}
+#     })
+#
+#     if not user:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail="Invalid or expired token"
+#         )
+#
+#     # Update password and clear token
+#     db.users.update_one(
+#         {"_id": user["_id"]},
+#         {"$set": {
+#             "hashed_password": get_password_hash(form_data.new_password),
+#             "reset_token": None,
+#             "reset_token_expires": None
+#         }}
+#     )
+#
+#     return {"message": "Password updated successfully"}
+
+
+@router.get("/reset-password", response_class=HTMLResponse)
+async def render_reset_form(
+        request: Request,
+        token: str,
+        message: str = None,
+        error: str = None
+):
+    # Verify token is valid (but don't require it to be unexpired yet)
+    user = db.users.find_one({"reset_token": token})
+
+    if not user:
+        # Token doesn't exist at all
+        return templates.TemplateResponse(
+            "reset_password.html",
+            {
+                "request": request,
+                "error": "Invalid or expired reset link",
+                "show_form": False
+            }
+        )
+
+    # Token exists, check if expired
+    is_expired = user["reset_token_expires"] < datetime.utcnow()
+
+    return templates.TemplateResponse(
+        "reset_password.html",
+        {
+            "request": request,
+            "token": token,
+            "message": message,
+            "error": error,
+            "show_form": not is_expired,
+            "is_expired": is_expired
+        }
+    )
+
+
+@router.post("/reset-password")
+async def reset_password(
+        request: Request,
+        form_data: ResetPasswordConfirm = Depends(ResetPasswordConfirm.as_form)
+):
+    try:
+        # Find user with this token
+        user = db.users.find_one({
+            "reset_token": form_data.token,
+            "reset_token_expires": {"$gt": datetime.utcnow()}
+        })
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid or expired token"
+            )
+
+        # Update password and clear token
+        db.users.update_one(
+            {"_id": user["_id"]},
+            {"$set": {
+                "hashed_password": get_password_hash(form_data.new_password),
+                "reset_token": None,
+                "reset_token_expires": None
+            }}
+        )
+
+        # Redirect to show success message
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse(
+            url=f"/reset-password?token={form_data.token}&message=Password updated successfully",
+            status_code=status.HTTP_303_SEE_OTHER
+        )
+
+    except Exception as e:
+        return RedirectResponse(
+            url=f"/reset-password?token={form_data.token}&error={str(e)}",
+            status_code=status.HTTP_303_SEE_OTHER
+        )

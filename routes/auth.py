@@ -6,7 +6,7 @@ from models.user import User
 from bson import ObjectId
 
 # Define the token URL
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/auth/login")
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/auth/login")
 router = APIRouter()
 
 # Password hashing utility

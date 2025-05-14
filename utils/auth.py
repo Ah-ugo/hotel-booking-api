@@ -9,9 +9,10 @@ from bson import ObjectId
 from config.settings import settings
 from config.db import db
 from models.newUser import TokenData, UserInDB
+import secrets
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
 
 def verify_password(plain_password, hashed_password):
@@ -93,3 +94,6 @@ def get_current_admin_user(current_user: UserInDB = Depends(get_current_user)) -
             detail="Not enough permissions"
         )
     return current_user
+
+def create_reset_token() -> str:
+    return secrets.token_urlsafe(32)

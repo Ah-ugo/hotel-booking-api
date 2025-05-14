@@ -49,3 +49,4 @@ websockets==13.0.1
 requests~=2.32.3
 jwt
 pydantic-settings
+aiosmtplib

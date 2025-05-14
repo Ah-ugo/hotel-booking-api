@@ -5,7 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a06884e7-32f2-4a55-aff9-231cc3b90fda" name="Changes" comment="First Commit">
+      <change afterPath="$PROJECT_DIR$/templates/password_reset.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/reset_password.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/newUser.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/newUser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/routes/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/auth_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/routes/auth_routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/email.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/email.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/email_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/email_util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,8 +24,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -31,15 +40,14 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Ah-ugo/hotel-booking-api.git&quot;,
-    &quot;accountId&quot;: &quot;77a49bd3-eac6-4607-b703-e5a16acd681e&quot;
+    &quot;url&quot;: &quot;https://github.com/Ah-ugo/hotel-booking-api&quot;,
+    &quot;accountId&quot;: &quot;644d81e3-a573-423c-9edf-811546e8d607&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
   <component name="ProjectId" id="2qFVtXxk9e1kmYQlWCQCrf586lM" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="autoscrollToSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -51,13 +59,20 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/user/Pythonprojects/hotel-booking-api&quot;
+    &quot;last_opened_file_path&quot;: &quot;/Users/user/Pythonprojects/hotel-booking-api&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-fc1d50d2d915-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.24978.54" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-PY-251.25410.122" />
+        <option value="bundled-python-sdk-880ecab49056-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.25410.122" />
       </set>
     </attachedChunks>
   </component>
@@ -69,6 +84,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1734258526588</updated>
+      <workItem from="1747177829684" duration="3029000" />
+      <workItem from="1747208157067" duration="12921000" />
     </task>
     <task id="LOCAL-00001" summary="First Commit">
       <option name="closed" value="true" />
@@ -96,6 +113,9 @@
     </task>
     <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First Commit" />

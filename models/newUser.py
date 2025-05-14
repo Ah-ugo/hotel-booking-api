@@ -3,6 +3,7 @@ from typing import Optional, List
 from datetime import datetime
 from config.db import PyObjectId
 from bson import ObjectId
+from fastapi import Form, HTTPException
 
 
 class GeoLocation(BaseModel):
@@ -76,4 +77,31 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     user_id: Optional[str] = None
     is_admin: Optional[bool] = False
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+
+# class ResetPasswordConfirm(BaseModel):
+#     token: str
+#     new_password: str
+
+
+class ResetPasswordConfirm(BaseModel):
+    token: str
+    new_password: str
+
+    @classmethod
+    def as_form(
+            cls,
+            token: str = Form(...),
+            new_password: str = Form(...),
+            confirm_password: str = Form(...)
+    ):
+        if new_password != confirm_password:
+            raise HTTPException(
+                status_code=400,
+                detail="Passwords do not match"
+            )
+        return cls(token=token, new_password=new_password)
+
 
