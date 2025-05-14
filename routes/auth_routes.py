@@ -182,8 +182,14 @@ async def show_reset_form(
         message: str = None,
         error: str = None
 ):
+    print(f"Token received: {token}")
     # Verify token exists
     user = db.users.find_one({"reset_token": token})
+    print(f"User found: {bool(user)}")  # Debug log
+    if user:
+        print(f"Token expires at: {user['reset_token_expires']}")
+        print(f"Current time: {datetime.utcnow()}")
+        print(f"Is expired: {user['reset_token_expires'] < datetime.utcnow()}")
 
     if not user:
         return templates.TemplateResponse(
