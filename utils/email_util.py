@@ -70,7 +70,7 @@ PASSWORD = os.getenv("GMAIL_PASS")
 
 
 async def send_reset_email(email_to: str, token: str):
-    reset_link = f"https://hotel-booking-api-r5dd.onrender.com/reset-password?token={token}"
+    reset_link = f"https://hotel-booking-api-r5dd.onrender.com/api/auth/reset-password?token={token}"
 
     # Create message container
     msg = MIMEMultipart('alternative')
