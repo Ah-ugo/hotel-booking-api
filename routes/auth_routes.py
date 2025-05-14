@@ -228,7 +228,7 @@ async def handle_password_reset(
     try:
         if new_password != confirm_password:
             return RedirectResponse(
-                url=f"/reset-password?token={token}&error=Passwords+do+not+match",
+                url=f"/api/auth/reset-password?token={token}&error=Passwords+do+not+match",
                 status_code=status.HTTP_303_SEE_OTHER
             )
 
