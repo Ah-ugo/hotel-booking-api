@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Request, Form
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta, datetime
 from typing import Dict, Any
@@ -13,7 +13,7 @@ from utils.auth import (
     get_current_active_user, create_reset_token
 )
 from utils.cloudinary_util import upload_image
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 # from utils.auth import create_reset_token
 from utils.email_util import send_reset_email
@@ -172,28 +172,31 @@ async def request_password_reset(request: ResetPasswordRequest):
 #     return {"message": "Password updated successfully"}
 
 
+
+
+
 @router.get("/reset-password", response_class=HTMLResponse)
-async def render_reset_form(
+async def show_reset_form(
         request: Request,
         token: str,
         message: str = None,
         error: str = None
 ):
-    # Verify token is valid (but don't require it to be unexpired yet)
+    # Verify token exists
     user = db.users.find_one({"reset_token": token})
 
     if not user:
-        # Token doesn't exist at all
         return templates.TemplateResponse(
             "reset_password.html",
             {
                 "request": request,
                 "error": "Invalid or expired reset link",
                 "show_form": False
-            }
+            },
+            status_code=status.HTTP_404_NOT_FOUND
         )
 
-    # Token exists, check if expired
+    # Check if token expired
     is_expired = user["reset_token_expires"] < datetime.utcnow()
 
     return templates.TemplateResponse(
@@ -210,14 +213,22 @@ async def render_reset_form(
 
 
 @router.post("/reset-password")
-async def reset_password(
+async def handle_password_reset(
         request: Request,
-        form_data: ResetPasswordConfirm = Depends(ResetPasswordConfirm.as_form)
+        token: str = Form(...),
+        new_password: str = Form(...),
+        confirm_password: str = Form(...)
 ):
     try:
-        # Find user with this token
+        if new_password != confirm_password:
+            return RedirectResponse(
+                url=f"/reset-password?token={token}&error=Passwords+do+not+match",
+                status_code=status.HTTP_303_SEE_OTHER
+            )
+
+        # Find user with valid token
         user = db.users.find_one({
-            "reset_token": form_data.token,
+            "reset_token": token,
             "reset_token_expires": {"$gt": datetime.utcnow()}
         })
 
@@ -227,25 +238,29 @@ async def reset_password(
                 detail="Invalid or expired token"
             )
 
-        # Update password and clear token
+        # Update password
         db.users.update_one(
             {"_id": user["_id"]},
             {"$set": {
-                "hashed_password": get_password_hash(form_data.new_password),
+                "hashed_password": get_password_hash(new_password),
                 "reset_token": None,
                 "reset_token_expires": None
             }}
         )
 
-        # Redirect to show success message
-        from fastapi.responses import RedirectResponse
         return RedirectResponse(
-            url=f"/api/auth/reset-password?token={form_data.token}&message=Password updated successfully",
+            url=f"/api/auth/reset-password?token={token}&message=Password+updated+successfully",
+            status_code=status.HTTP_303_SEE_OTHER
+        )
+
+    except HTTPException:
+        return RedirectResponse(
+            url=f"/api/auth/reset-password?token={token}&error=Invalid+or+expired+token",
             status_code=status.HTTP_303_SEE_OTHER
         )
 
     except Exception as e:
         return RedirectResponse(
-            url=f"/api/auth/reset-password?token={form_data.token}&error={str(e)}",
+            url=f"/api/auth/reset-password?token={token}&error=An+error+occurred",
             status_code=status.HTTP_303_SEE_OTHER
         )
