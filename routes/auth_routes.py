@@ -240,12 +240,12 @@ async def reset_password(
         # Redirect to show success message
         from fastapi.responses import RedirectResponse
         return RedirectResponse(
-            url=f"/reset-password?token={form_data.token}&message=Password updated successfully",
+            url=f"/api/auth/reset-password?token={form_data.token}&message=Password updated successfully",
             status_code=status.HTTP_303_SEE_OTHER
         )
 
     except Exception as e:
         return RedirectResponse(
-            url=f"/reset-password?token={form_data.token}&error={str(e)}",
+            url=f"/api/auth/reset-password?token={form_data.token}&error={str(e)}",
             status_code=status.HTTP_303_SEE_OTHER
         )
