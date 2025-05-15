@@ -453,6 +453,7 @@ def update_booking(
 
     return booking_response
 
+
 @router.delete("/{booking_id}", response_model=BookingResponse)
 def cancel_booking(
         booking_id: str,
@@ -494,8 +495,13 @@ def cancel_booking(
         }
     )
 
-    # Get updated booking
+    # Get updated booking and convert ObjectId to string
     updated_booking = db.bookings.find_one({"_id": ObjectId(booking_id)})
+
+    # Convert all ObjectId fields to strings
+    updated_booking["_id"] = str(updated_booking["_id"])
+    updated_booking["user_id"] = str(updated_booking["user_id"])
+    updated_booking["accommodation_id"] = str(updated_booking["accommodation_id"])
 
     return BookingResponse(**updated_booking)
 
