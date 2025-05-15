@@ -55,7 +55,7 @@ def initiate_payment(
         )
 
     # Get accommodation details
-    accommodation = db.accommodations.find_one({"_id": booking["accommodation_id"]})
+    accommodation = db.accommodations.find_one({"_id": ObjectId(booking["accommodation_id"])})
 
     if not accommodation:
         raise HTTPException(

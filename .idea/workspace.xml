@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a06884e7-32f2-4a55-aff9-231cc3b90fda" name="Changes" comment="password reset fix 2">
+    <list default="true" id="a06884e7-32f2-4a55-aff9-231cc3b90fda" name="Changes" comment="fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/accommodation_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/routes/accommodation_routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/booking_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/routes/booking_routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/payment_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/routes/payment_routes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +78,7 @@
       <option name="presentableId" value="Default" />
       <updated>1734258526588</updated>
       <workItem from="1747177829684" duration="3029000" />
-      <workItem from="1747208157067" duration="28187000" />
+      <workItem from="1747208157067" duration="35073000" />
     </task>
     <task id="LOCAL-00001" summary="First Commit">
       <option name="closed" value="true" />
@@ -168,7 +168,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747238823966</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="fix">
+      <option name="closed" value="true" />
+      <created>1747278064687</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1747278064687</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -179,7 +187,8 @@
     <MESSAGE value="password reset setup" />
     <MESSAGE value="password reset fix" />
     <MESSAGE value="password reset fix 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="password reset fix 2" />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
