@@ -834,7 +834,7 @@ def get_accommodation_reviews(
         )
 
     # Build query
-    query = {"accommodation_id": ObjectId(accommodation_id)}
+    query = {"accommodation_id": accommodation_id}
 
     # Count total documents for pagination
     total_count = db.reviews.count_documents(query)
@@ -852,9 +852,16 @@ def get_accommodation_reviews(
         .limit(limit)
     )
 
-    # Get user details for each review
+    # Convert ObjectId to string and get user details for each review
+    processed_reviews = []
     for review in reviews:
-        user = db.users.find_one({"_id": review["user_id"]})
+        # Convert ObjectId to string
+        review["_id"] = str(review["_id"])
+        review["accommodation_id"] = str(review["accommodation_id"])
+        review["user_id"] = str(review["user_id"])
+
+        # Get user details
+        user = db.users.find_one({"_id": ObjectId(review["user_id"])})
         if user:
             review["user"] = {
                 "id": str(user["_id"]),
@@ -862,9 +869,10 @@ def get_accommodation_reviews(
                 "last_name": user["last_name"],
                 "profile_image_url": user.get("profile_image_url")
             }
+        processed_reviews.append(review)
 
     # Format response
-    results = [ReviewResponse(**review) for review in reviews]
+    results = [ReviewResponse(**review) for review in processed_reviews]
 
     return {
         "results": results,
@@ -875,7 +883,6 @@ def get_accommodation_reviews(
         "average_rating": accommodation.get("average_rating", 0),
         "reviews_count": accommodation.get("reviews_count", 0)
     }
-
 
 @router.post("/{accommodation_id}/reviews", response_model=ReviewResponse)
 def create_review(

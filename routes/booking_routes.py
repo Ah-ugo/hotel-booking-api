@@ -16,6 +16,145 @@ from utils.email_util import send_booking_confirmation
 
 router = APIRouter()
 
+def convert_objectid_to_str(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Helper function to convert ObjectId to string in a dictionary"""
+    converted_data = {}
+    for key, value in data.items():
+        if isinstance(value, ObjectId):
+            converted_data[key] = str(value)
+        elif isinstance(value, dict):
+            converted_data[key] = convert_objectid_to_str(value)
+        elif isinstance(value, list):
+            converted_data[key] = [
+                str(item) if isinstance(item, ObjectId) else (
+                    convert_objectid_to_str(item) if isinstance(item, dict) else item
+                ) for item in value
+            ]
+        else:
+            converted_data[key] = value
+    return converted_data
+
+
+# @router.post("/", response_model=BookingResponse)
+# def create_booking(
+#     booking_data: BookingCreate = Body(...),
+#     current_user: UserInDB = Depends(get_current_active_user)
+# ):
+#     # Check if accommodation exists
+#     if not ObjectId.is_valid(str(booking_data.accommodation_id)):
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail="Invalid accommodation ID"
+#         )
+#
+#     accommodation = db.accommodations.find_one({"_id": ObjectId(booking_data.accommodation_id)})
+#
+#     if not accommodation:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="Accommodation not found"
+#         )
+#
+#     # Check if room exists and is available
+#     if "rooms" not in accommodation or not accommodation["rooms"]:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail="No rooms available for this accommodation"
+#         )
+#
+#     # Find the room
+#     room_index = -1
+#     for i, room in enumerate(accommodation["rooms"]):
+#         if str(i) == booking_data.room_id:
+#             room_index = i
+#             break
+#
+#     if room_index == -1:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail="Room not found"
+#         )
+#
+#     room = accommodation["rooms"][room_index]
+#
+#     if not room.get("is_available", True):
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail="Room is not available"
+#         )
+#
+#     # Check if room is already booked for the requested dates
+#     existing_booking = db.bookings.find_one({
+#         "accommodation_id": booking_data.accommodation_id,
+#         "room_id": booking_data.room_id,
+#         "booking_status": {"$in": ["pending", "confirmed"]},
+#         "$or": [
+#             {
+#                 "check_in_date": {"$lte": booking_data.check_in_date},
+#                 "check_out_date": {"$gte": booking_data.check_in_date}
+#             },
+#             {
+#                 "check_in_date": {"$lte": booking_data.check_out_date},
+#                 "check_out_date": {"$gte": booking_data.check_out_date}
+#             },
+#             {
+#                 "check_in_date": {"$gte": booking_data.check_in_date},
+#                 "check_out_date": {"$lte": booking_data.check_out_date}
+#             }
+#         ]
+#     })
+#
+#     if existing_booking:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail="Room is already booked for the requested dates"
+#         )
+#
+#     # Calculate total price
+#     days = (booking_data.check_out_date - booking_data.check_in_date).days
+#     total_price = days * room.get("price_per_night", 0)
+#
+#     # Create booking
+#     booking_dict = booking_data.dict()
+#     booking_dict["user_id"] = current_user.id
+#     booking_dict["total_price"] = total_price
+#     booking_dict["booking_status"] = BookingStatus.PENDING
+#     booking_dict["payment_status"] = PaymentStatus.PENDING
+#     booking_dict["created_at"] = datetime.utcnow()
+#
+#     # Insert booking into database
+#     result = db.bookings.insert_one(booking_dict)
+#
+#     # Update accommodation booking count
+#     db.accommodations.update_one(
+#         {"_id": booking_data.accommodation_id},
+#         {"$inc": {"total_bookings": 1}}
+#     )
+#
+#     # Get created booking
+#     created_booking = db.bookings.find_one({"_id": result.inserted_id})
+#
+#     # Send booking confirmation email
+#     booking_with_details = BookingWithDetails(
+#         _id=str(created_booking["_id"]),
+#         user_id=str(created_booking["user_id"]),
+#         accommodation_id=str(created_booking["accommodation_id"]),
+#         total_price=created_booking["total_price"],
+#         booking_status=created_booking["booking_status"],
+#         payment_status=created_booking["payment_status"],
+#         created_at=created_booking["created_at"],
+#         accommodation_details=accommodation,
+#         user_details=current_user.dict(),
+#         check_in_date=created_booking["check_in_date"],
+#         check_out_date=created_booking["check_out_date"],
+#         guests=created_booking["guests"],
+#         room_id=created_booking["room_id"],
+#         special_requests=created_booking.get("special_requests"),
+#
+#     )
+#     send_booking_confirmation(booking_with_details)
+#
+#     return BookingResponse(**created_booking)
 
 @router.post("/", response_model=BookingResponse)
 def create_booking(
@@ -36,15 +175,13 @@ def create_booking(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Accommodation not found"
         )
-
-    # Check if room exists and is available
     if "rooms" not in accommodation or not accommodation["rooms"]:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No rooms available for this accommodation"
         )
 
-    # Find the room
+
     room_index = -1
     for i, room in enumerate(accommodation["rooms"]):
         if str(i) == booking_data.room_id:
@@ -58,32 +195,31 @@ def create_booking(
         )
 
     room = accommodation["rooms"][room_index]
-
     if not room.get("is_available", True):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Room is not available"
         )
 
-    # Check if room is already booked for the requested dates
+
     existing_booking = db.bookings.find_one({
         "accommodation_id": booking_data.accommodation_id,
         "room_id": booking_data.room_id,
         "booking_status": {"$in": ["pending", "confirmed"]},
         "$or": [
-            {
-                "check_in_date": {"$lte": booking_data.check_in_date},
-                "check_out_date": {"$gte": booking_data.check_in_date}
-            },
-            {
-                "check_in_date": {"$lte": booking_data.check_out_date},
-                "check_out_date": {"$gte": booking_data.check_out_date}
-            },
-            {
-                "check_in_date": {"$gte": booking_data.check_in_date},
-                "check_out_date": {"$lte": booking_data.check_out_date}
-            }
-        ]
+                    {
+                        "check_in_date": {"$lte": booking_data.check_in_date},
+                        "check_out_date": {"$gte": booking_data.check_in_date}
+                    },
+                    {
+                        "check_in_date": {"$lte": booking_data.check_out_date},
+                        "check_out_date": {"$gte": booking_data.check_out_date}
+                    },
+                    {
+                        "check_in_date": {"$gte": booking_data.check_in_date},
+                        "check_out_date": {"$lte": booking_data.check_out_date}
+                    }
+                ]
     })
 
     if existing_booking:
@@ -92,11 +228,11 @@ def create_booking(
             detail="Room is already booked for the requested dates"
         )
 
-    # Calculate total price
+
     days = (booking_data.check_out_date - booking_data.check_in_date).days
     total_price = days * room.get("price_per_night", 0)
 
-    # Create booking
+
     booking_dict = booking_data.dict()
     booking_dict["user_id"] = current_user.id
     booking_dict["total_price"] = total_price
@@ -104,35 +240,34 @@ def create_booking(
     booking_dict["payment_status"] = PaymentStatus.PENDING
     booking_dict["created_at"] = datetime.utcnow()
 
-    # Insert booking into database
+
     result = db.bookings.insert_one(booking_dict)
 
-    # Update accommodation booking count
     db.accommodations.update_one(
-        {"_id": booking_data.accommodation_id},
+        {"_id": ObjectId(booking_data.accommodation_id)},
         {"$inc": {"total_bookings": 1}}
     )
 
-    # Get created booking
-    created_booking = db.bookings.find_one({"_id": result.inserted_id})
 
-    # Send booking confirmation email
+    created_booking = db.bookings.find_one({"_id": result.inserted_id})
+    created_booking = convert_objectid_to_str(created_booking)
+
+
     booking_with_details = BookingWithDetails(
-        _id=str(created_booking["_id"]),
-        user_id=str(created_booking["user_id"]),
-        accommodation_id=str(created_booking["accommodation_id"]),
+        _id=created_booking["_id"],
+        user_id=created_booking["user_id"],
+        accommodation_id=created_booking["accommodation_id"],
         total_price=created_booking["total_price"],
         booking_status=created_booking["booking_status"],
         payment_status=created_booking["payment_status"],
         created_at=created_booking["created_at"],
-        accommodation_details=accommodation,
-        user_details=current_user.dict(),
+        accommodation_details=convert_objectid_to_str(accommodation),
+        user_details=convert_objectid_to_str(current_user.dict()),
         check_in_date=created_booking["check_in_date"],
         check_out_date=created_booking["check_out_date"],
         guests=created_booking["guests"],
         room_id=created_booking["room_id"],
         special_requests=created_booking.get("special_requests"),
-
     )
     send_booking_confirmation(booking_with_details)
 

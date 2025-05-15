@@ -7,6 +7,7 @@
     <list default="true" id="a06884e7-32f2-4a55-aff9-231cc3b90fda" name="Changes" comment="password reset fix 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/accommodation_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/routes/accommodation_routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/booking_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/routes/booking_routes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +78,7 @@
       <option name="presentableId" value="Default" />
       <updated>1734258526588</updated>
       <workItem from="1747177829684" duration="3029000" />
-      <workItem from="1747208157067" duration="19905000" />
+      <workItem from="1747208157067" duration="28187000" />
     </task>
     <task id="LOCAL-00001" summary="First Commit">
       <option name="closed" value="true" />
@@ -159,7 +160,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747236762833</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="password reset fix 2">
+      <option name="closed" value="true" />
+      <created>1747238823966</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1747238823966</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
