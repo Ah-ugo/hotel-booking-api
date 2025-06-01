@@ -1112,21 +1112,34 @@ def delete_review(
     return None
 
 
-@router.get("/amenities/list", response_model=List[str])
+@router.get("/amenities/list", response_model=Dict[str, List[str]])
 def get_available_amenities():
     """
-    Get a list of all available amenities across all accommodations.
+    Get a list of all available amenities across all accommodations, separated by level.
     """
-    # Aggregate all unique amenity names
-    pipeline = [
-        {"$unwind": "$amenities"},
+    # Get accommodation-level amenities
+    acc_pipeline = [
+        {"$unwind": {"path": "$amenities", "preserveNullAndEmptyArrays": True}},
         {"$group": {"_id": "$amenities.name"}},
+        {"$match": {"_id": {"$ne": None}}},
         {"$sort": {"_id": 1}}
     ]
+    acc_amenities = [a["_id"] for a in db.accommodations.aggregate(acc_pipeline)]
 
-    amenities = list(db.accommodations.aggregate(pipeline))
-    return [amenity["_id"] for amenity in amenities]
+    # Get room-level amenities
+    room_pipeline = [
+        {"$unwind": "$rooms"},
+        {"$unwind": "$rooms.amenities"},
+        {"$group": {"_id": "$rooms.amenities.name"}},
+        {"$match": {"_id": {"$ne": None}}},
+        {"$sort": {"_id": 1}}
+    ]
+    room_amenities = [a["_id"] for a in db.accommodations.aggregate(room_pipeline)]
 
+    return {
+        "accommodation_amenities": acc_amenities,
+        "room_amenities": room_amenities
+    }
 
 @router.get("/cities/list", response_model=List[str])
 def get_available_cities(
