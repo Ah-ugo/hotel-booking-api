@@ -50,6 +50,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1000
     SECRET_KEY: str = "asdfghgjhtryuyhkjghv"
     ALGORITHM: str = "HS256"
+    PAYSTACK_SECRET_KEY:str
 
     class Config:
         env_file = ".env"
